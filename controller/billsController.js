@@ -70,4 +70,17 @@ router.put('/', (req, res) => {
     });
 });
 
+router.delete('/', (req, res) => {
+    if (!objectId.isValid(req.params.id))
+        return res.status(400).send({ errorMsg: `No Record found for the given id ${req.params.id}` });
+
+    Bills.findByIdAndRemove(req.params.id, (err, doc) => {
+        if (!err)
+            res.status(200).send(doc);
+        else
+            console.log(`Error in delete a bill: ${JSON.stringify(err, undefined, 2)}`);
+    });
+
+});
+
 module.exports = router;
