@@ -4,7 +4,7 @@ mongoose.connect('mongodb://localhost:27017/docmgnt', { useNewUrlParser: true },
     if (!err)
         console.log('MongoDb connection succeeded');
     else
-        consolelog('Error in Db Connection: ' + JSON.stringify(err, undefined, 2));
+        console.log('Error in Db Connection: ' + JSON.stringify(err, undefined, 2));
 });
 
 module.exports = mongoose;
