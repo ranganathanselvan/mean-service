@@ -1,4 +1,5 @@
 const  express = require('express');
+const cors = require('cors');
 
 const mongoose = require('./db');
 const billsController = require('./controller/billsController');
@@ -6,6 +7,7 @@ const billsController = require('./controller/billsController');
 const app = express();
 
 app.use(express.json());
+app.use(cors({origin: 'http://localhost:4200'}));
 
 const PORT = 3000;
 app.listen(PORT, () => {
