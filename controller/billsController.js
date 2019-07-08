@@ -37,11 +37,13 @@ router.post('/', (req, res) => {
         itemsObj.push(req.body.items[i]);
     }
     let billObj = new Bills({
+        billtype: req.body.billtype,
         shopname: req.body.shopname,
-        purchaseDate: req.body.purchaseDate,
-        Cashier: req.body.Cashier,
+        billno: req.body.billno,
+        purchasedate: req.body.purchasedate,
+        cashier: req.body.cashier,
         items: itemsObj,
-        totalAmount: req.body.totalAmount
+        totalamount: req.body.totalamount
     });
     billObj.save((err, doc) => {
         if (!err)
@@ -56,11 +58,13 @@ router.put('/', (req, res) => {
         return res.status(400).send({ errorMsg: `No Record found for the given id ${req.params.id}` });
 
     const objBill = {
+        billtype: req.body.billtype,
         shopname: req.body.shopname,
-        purchaseDate: req.body.purchaseDate,
-        Cashier: req.body.Cashier,
+        billno: req.body.billno,
+        purchasedate: req.body.purchasedate,
+        cashier: req.body.cashier,
         items: req.body.items,
-        totalAmount: req.body.totalAmount
+        totalamount: req.body.totalamount
     }
     Bills.findByIdAndUpdate(req.params.id, { $set: objBill }, { new: true }, (err, doc) => {
         if (!err)
