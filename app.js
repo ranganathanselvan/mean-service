@@ -3,6 +3,7 @@ const cors = require('cors');
 
 const mongoose = require('./db');
 const billsController = require('./controller/billsController');
+const incomeController = require('./controller/incomeController');
 
 const app = express();
 
@@ -15,3 +16,4 @@ app.listen(PORT, () => {
 });
 
 app.use('/api/bills', billsController);
+app.use('/api/incomes', incomeController);
