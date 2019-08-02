@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('./db');
 const billsController = require('./controller/billsController');
 const incomeController = require('./controller/incomeController');
+const transactionController = require('./controller/transactionController');
 
 const app = express();
 
@@ -17,3 +18,4 @@ app.listen(PORT, () => {
 
 app.use('/api/bills', billsController);
 app.use('/api/incomes', incomeController);
+app.use('/api/transaction', transactionController);
