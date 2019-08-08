@@ -52,7 +52,7 @@ router.put('/', (req, res) => {
     if (!objectId.isValid(req.params.id))
         return res.status(400).send({ errorMsg: `No Record found for the given id ${req.params.id}` });
 
-    const objTransaction = {        
+    const objTransaction = {
         transactiontype: req.body.transactiontype,
         description: req.body.description,
         date: req.body.date,

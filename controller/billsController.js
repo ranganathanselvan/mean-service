@@ -7,7 +7,7 @@ let Bills = require('../model/bills');
 
 // => localhost:3000/api/bills/
 router.get('/', (req, res) => {
-    Bills.find((err, docs) => {
+    Bills.find().sort({purchasedate: -1}).exec((err, docs) => {
         if (!err)
             res.status(200).send(docs);
         else

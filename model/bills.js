@@ -5,7 +5,7 @@ let bills = mongoosedb.model('bills', {
     paymentmode: {type: String},
     shopname: { type: String },
     billno: {type: String},
-    purchasedate: { type: String },
+    purchasedate: { type: Date },
     cashier: { type: String },
     items: [],
     totalamount: { type: String }
