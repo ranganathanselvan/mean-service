@@ -3,44 +3,45 @@ const objectId = require('mongoose').Types.ObjectId;
 
 const router = express.Router();
 
-let transaction = require('../model/transaction');
+let salary = require('../model/salary');
 
-// => localhost:3000/api/transaction/
+// => localhost:3000/api/salary/
 router.get('/', (req, res) => {
-    transaction.find((err, docs) => {
+    salary.find((err, docs) => {
         if (!err)
             res.status(200).send(docs);
         else
-            console.log(`Error in Retriving transaction: ${JSON.stringify(err, undefined, 2)}`);
+            console.log(`Error in Retriving salary: ${JSON.stringify(err, undefined, 2)}`);
     });
 });
 
-// => localhost:3000/api/transaction/
+// => localhost:3000/api/salary/
 router.get('/:id', (req, res) => {
     if (!objectId.isValid(req.query.id))
         return res.status(400).send({ errorMsg: `No Record found for the given id ${req.query.id}` });
 
-    transaction.findById(req.query.id, (err, docs) => {
+    salary.findById(req.query.id, (err, docs) => {
         if (!err)
             res.status(200).send(docs);
         else
-            console.log(`Error in Retriving transaction for the given id : ${JSON.stringify(err, undefined, 2)}`);
+            console.log(`Error in Retriving salary for the given id : ${JSON.stringify(err, undefined, 2)}`);
     });
 
 });
 
-// => localhost:3000/api/transaction/
+// => localhost:3000/api/salary/
 router.post('/', (req, res) => {
 
-    let transactionObj = new transaction({
-        transactiontype: req.body.transactiontype,
-        description: req.body.description,
-        date: req.body.date,
-        amount: req.body.amount,
-        balance: req.body.balance,
-        comment: req.body.comment
+    let salaryObj = new salary({
+        month: req.body.month,
+        year: req.body.year,
+        earnings: req.body.earnings,
+        deductions: req.body.deductions,
+        earningsamount: req.body.earningsamount,
+        deductionsamount: req.body.deductionsamount,
+        netamount: req.body.netamount
     });
-    transactionObj.save((err, doc) => {
+    salaryObj.save((err, doc) => {
         if (!err)
             res.status(200).send(doc);
         else
@@ -52,15 +53,16 @@ router.put('/', (req, res) => {
     if (!objectId.isValid(req.query.id))
         return res.status(400).send({ errorMsg: `No Record found for the given id ${req.query.id}` });
 
-    const objTransaction = {
-        transactiontype: req.body.transactiontype,
-        description: req.body.description,
-        date: req.body.date,
-        amount: req.body.amount,
-        balance: req.body.balance,
-        comment: req.body.comment
+    const objSalary = {
+        month: req.body.month,
+        year: req.body.year,
+        earnings: req.body.earnings,
+        deductions: req.body.deductions,
+        earningsamount: req.body.earningsamount,
+        deductionsamount: req.body.deductionsamount,
+        netamount: req.body.netamount
     }
-    transaction.findByIdAndUpdate(req.query.id, { $set: objTransaction }, { new: true }, (err, doc) => {
+    salary.findByIdAndUpdate(req.query.id, { $set: objSalary }, { new: true }, (err, doc) => {
         if (!err)
             res.status(200).send(doc);
         else
@@ -72,11 +74,11 @@ router.delete('/', (req, res) => {
     if (!objectId.isValid(req.query.id))
         return res.status(400).send({ errorMsg: `No Record found for the given id ${req.query.id}` });
 
-    transaction.findByIdAndRemove(req.query.id, (err, doc) => {
+    salary.findByIdAndRemove(req.query.id, (err, doc) => {
         if (!err)
             res.status(200).send(doc);
         else
-            console.log(`Error in delete a transaction: ${JSON.stringify(err, undefined, 2)}`);
+            console.log(`Error in delete a salary: ${JSON.stringify(err, undefined, 2)}`);
     });
 
 });

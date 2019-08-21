@@ -18,10 +18,10 @@ router.get('/', (req, res) => {
 
 // => localhost:3000/api/bills/
 router.get('/:id', (req, res) => {
-    if (!objectId.isValid(req.params.id))
-        return res.status(400).send({ errorMsg: `No Record found for the given id ${req.params.id}` });
+    if (!objectId.isValid(req.query.id))
+        return res.status(400).send({ errorMsg: `No Record found for the given id ${req.query.id}` });
 
-    Bills.findById(req.params.id, (err, docs) => {
+    Bills.findById(req.query.id, (err, docs) => {
         if (!err)
             res.status(200).send(docs);
         else
@@ -56,7 +56,7 @@ router.post('/', (req, res) => {
 
 router.put('/', (req, res) => {
     if (!objectId.isValid(objectId(req.query.id)))
-        return res.status(400).send({ errorMsg: `No Record found for the given id ${req.params.id}` });
+        return res.status(400).send({ errorMsg: `No Record found for the given id ${req.query.id}` });
 
     const objBill = {
         billtype: req.body.billtype,
@@ -77,10 +77,10 @@ router.put('/', (req, res) => {
 });
 
 router.delete('/', (req, res) => {
-    if (!objectId.isValid(req.params.id))
-        return res.status(400).send({ errorMsg: `No Record found for the given id ${req.params.id}` });
+    if (!objectId.isValid(req.query.id))
+        return res.status(400).send({ errorMsg: `No Record found for the given id ${req.query.id}` });
 
-    Bills.findByIdAndRemove(req.params.id, (err, doc) => {
+    Bills.findByIdAndRemove(req.query.id, (err, doc) => {
         if (!err)
             res.status(200).send(doc);
         else
