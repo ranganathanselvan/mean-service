@@ -15,6 +15,36 @@ router.get('/', (req, res) => {
     });
 });
 
+// => localhost:3000/api/transaction/30days
+router.get('/30days', (req, res) => {
+    var deductDate = new Date('2019-09-10');
+    var startDate = deductDate.setDate(deductDate - 30);
+    console.log(deductDate);
+    console.log(startDate);
+
+    /*transaction.find({date: {$gte: startDate, $lte: deductDate}}, (err, docs) => {
+        if (!err)
+            res.status(200).send(docs);
+        else
+            console.log(`Error in Retriving transaction: ${JSON.stringify(err, undefined, 2)}`);
+    });*/
+});
+
+router.get('/monthlyexpense', (req, res) => {
+
+    transaction.aggregate(
+        [{ $project: { transactiontype: 1, description: 1, month: { $month: '$date' }, year: { $year: '$date' }, amount: 1 } },
+        { $match: { month: 09, year: 2019, transactiontype: "Expense" } },
+        { $group: { _id: { type: "$transactiontype", desc: "$description" }, total: { $sum: "$amount" }, count: { $sum: 1 } } }]
+    ).exec((err, docs) => {
+        if (!err)
+            res.status(200).send(docs);
+        else
+            console.log(`Error in Retriving transaction by Aggregate : ${JSON.stringify(err, undefined, 2)}`);
+    });
+
+});
+
 // => localhost:3000/api/transaction/
 router.get('/:id', (req, res) => {
     if (!objectId.isValid(req.query.id))
