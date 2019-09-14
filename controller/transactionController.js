@@ -15,13 +15,14 @@ router.get('/', (req, res) => {
     });
 });
 
-// => localhost:3000/api/transaction/30days
-router.get('/30days', (req, res) => {
-    var deductDate = new Date('2019-09-10');
-    var startDate = deductDate.setDate(deductDate - 30);
-    console.log(deductDate);
-    console.log(startDate);
-
+// => localhost:3000/api/transaction/date
+router.get('/date', (req, res) => {
+    var Date = {};
+    var d = new Date();
+    d.setDate(d.getDate() - 10);
+    Date.currentDate = new Date();
+    Date.reduceDate = d;
+    res.status(200).send(JSON.stringify(Date));
     /*transaction.find({date: {$gte: startDate, $lte: deductDate}}, (err, docs) => {
         if (!err)
             res.status(200).send(docs);
@@ -30,23 +31,34 @@ router.get('/30days', (req, res) => {
     });*/
 });
 
-router.get('/monthlyexpense', (req, res) => {
+// => localhost:3000/api/transaction/monthlyexpense/:month/:year
+router.get('/monthlyexpense/:month/:year', (req, res) => {
+
+    console.log('Month: ' + req.params.month);
+    console.log('Year: ' + req.params.year);
+    if (!req.params.month || !req.params.year) {
+        res.status(500).send('Unable to retrive expense. Invalid month or year.');
+    }
+    const month = Number(req.params.month);
+    const year = Number(req.params.year);
 
     transaction.aggregate(
         [{ $project: { transactiontype: 1, description: 1, month: { $month: '$date' }, year: { $year: '$date' }, amount: 1 } },
-        { $match: { month: 09, year: 2019, transactiontype: "Expense" } },
+        { $match: { month: month, year: year, transactiontype: "Expense" } },
         { $group: { _id: { type: "$transactiontype", desc: "$description" }, total: { $sum: "$amount" }, count: { $sum: 1 } } }]
     ).exec((err, docs) => {
-        if (!err)
+        if (!err) {
             res.status(200).send(docs);
-        else
+        } else {
             console.log(`Error in Retriving transaction by Aggregate : ${JSON.stringify(err, undefined, 2)}`);
+            res.status(500).send('Unable to retrive expense.' + JSON.stringify(err, undefined, 2));
+        }
     });
 
 });
 
-// => localhost:3000/api/transaction/
-router.get('/:id', (req, res) => {
+// => localhost:3000/api/transaction/expenseById/:id
+router.get('/expenseById/:id', (req, res) => {
     if (!objectId.isValid(req.query.id))
         return res.status(400).send({ errorMsg: `No Record found for the given id ${req.query.id}` });
 
