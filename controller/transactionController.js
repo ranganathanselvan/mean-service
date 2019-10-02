@@ -57,6 +57,31 @@ router.get('/monthlyexpense/:month/:year', (req, res) => {
 
 });
 
+// => localhost:3000/api/transaction/getExpenseDetailsByDesc/:month/:year/:description
+router.get('/getExpenseDetailsByDesc/:month/:year/:description', (req, res) => {
+
+    if (!req.params.month || !req.params.year || !req.params.description) {
+        res.status(500).send('Unable to retrive expense. Invalid month or year or description.');
+    }
+    const month = Number(req.params.month);
+    const year = Number(req.params.year);
+    const desc = req.params.description;
+
+    transaction.aggregate(
+        [
+            { $project: { transactiontype: 1, description: 1, date: 1, month: { $month: '$date' }, year: { $year: '$date' }, amount: 1, comment: 1 } },
+            { $match: { month: month, year: year, transactiontype: "Expense", description: desc } }
+        ]
+    ).exec((err, docs) => {
+        if (!err) {
+            res.status(200).send(docs);
+        } else {
+            console.log(`Error in Retriving transaction by Aggregate : ${JSON.stringify(err, undefined, 2)}`);
+            res.status(500).send('Unable to retrive expense.' + JSON.stringify(err, undefined, 2));
+        }
+    });
+});
+
 // => localhost:3000/api/transaction/expenseById/:id
 router.get('/expenseById/:id', (req, res) => {
     if (!objectId.isValid(req.query.id))
