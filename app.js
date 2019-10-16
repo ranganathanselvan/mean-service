@@ -12,7 +12,11 @@ const app = express();
 app.use(express.json());
 app.use(cors({origin: 'http://localhost:4200'}));
 
-const PORT = 3000;
+let PORT = process.env.PORT;
+if (PORT == null || PORT == "") {
+    PORT = 3000;
+}
+//const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server started at port ${PORT}` );
 });
