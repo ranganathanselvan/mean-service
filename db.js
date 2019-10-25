@@ -13,7 +13,7 @@ dotenv.config();
             "/" +
             process.env.API_DB_NAME +
             "?retryWrites=true&w=majority";*/
-const uri = 'mongodb+srv://tamran1988:1988-tamil@tamran0-ctnm5.mongodb.net/test?retryWrites=true&w=majority';
+const uri = 'mongodb+srv://tamran1988:1988-tamil@tamran0-ctnm5.mongodb.net/docmgnt?retryWrites=true&w=majority';
 console.log(uri);
 mongoose.connect(uri, { useNewUrlParser: true }, (err) => {
     if (!err)
