@@ -1,5 +1,6 @@
 const  express = require('express');
 const cors = require('cors');
+const dotenv = require('dotenv');
 
 const mongoose = require('./db');
 const billsController = require('./controller/billsController');
@@ -9,9 +10,10 @@ const salaryController = require('./controller/salaryController');
 
 const app = express();
 
+dotenv.config();
 app.use(express.json());
 app.use(cors({origin: 'http://localhost:4200'}));
-
+console.log(`Your port is ${process.env.PORT}`); // 8626
 let PORT = process.env.PORT;
 if (PORT == null || PORT == "") {
     PORT = 3000;
