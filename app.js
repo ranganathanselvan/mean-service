@@ -22,6 +22,7 @@ if (PORT == null || PORT == "") {
 app.listen(PORT, () => {
     console.log(`Server started at port ${PORT}` );
 });
+app.use(express.static(__dirname + '/app'));
 
 app.use('/api/bills', billsController);
 app.use('/api/incomes', incomeController);

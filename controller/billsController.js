@@ -3,11 +3,11 @@ const objectId = require('mongoose').Types.ObjectId;
 
 const router = express.Router();
 
-let Bills = require('../model/bills');
+let bills = require('../model/bills');
 
 // => localhost:3000/api/bills/
 router.get('/', (req, res) => {
-    Bills.find().sort({purchasedate: -1}).exec((err, docs) => {
+    bills.find().sort({ purchasedate: -1 }).exec((err, docs) => {
         if (!err)
             res.status(200).send(docs);
         else
@@ -17,11 +17,65 @@ router.get('/', (req, res) => {
 });
 
 // => localhost:3000/api/bills/
+router.get('/distinct/shopname', (req, res) => {
+    bills.aggregate(
+        [
+            {$group: {_id: "$shopname"}},           
+            {$project: {_id: 1}},
+	        {$sort: {_id: 1}}
+        ]
+    ).exec((err, docs) => {
+        if (!err) {
+            res.status(200).send(docs);
+        } else {
+            console.log(`Error in Retriving transaction by Aggregate : ${JSON.stringify(err, undefined, 2)}`);
+            res.status(500).send('Unable to retrive shopname.' + JSON.stringify(err, undefined, 2));
+        }
+    });
+});
+
+
+// => localhost:3000/api/bills/
+router.get('/distinct/productname', (req, res) => {
+
+    bills.aggregate(
+        [
+            {
+                $group: {
+                    _id: null,
+                    array: { $push: "$items.ProductName" }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    ProductName: {
+                        $reduce: {
+                            input: "$array",
+                            initialValue: [],
+                            in: { $concatArrays: [ "$$value", "$$this" ] }
+                        }
+                    }
+                }
+            },
+            {$sort: {ProductName: 1}}
+        ]
+    ).exec((err, docs) => {
+        if (!err) {
+            res.status(200).send(docs);
+        } else {
+            console.log(`Error in Retriving transaction by Aggregate : ${JSON.stringify(err, undefined, 2)}`);
+            res.status(500).send('Unable to retrive productname.' + JSON.stringify(err, undefined, 2));
+        }
+    });
+});
+
+// => localhost:3000/api/bills/
 router.get('/:id', (req, res) => {
     if (!objectId.isValid(req.query.id))
         return res.status(400).send({ errorMsg: `No Record found for the given id ${req.query.id}` });
 
-    Bills.findById(req.query.id, (err, docs) => {
+    bills.findById(req.query.id, (err, docs) => {
         if (!err)
             res.status(200).send(docs);
         else
@@ -36,7 +90,7 @@ router.post('/', (req, res) => {
     for (var i = 0; i < req.body.items.length; i++) {
         itemsObj.push(req.body.items[i]);
     }
-    let billObj = new Bills({
+    let billObj = new bills({
         billtype: req.body.billtype,
         shopname: req.body.shopname,
         paymentmode: req.body.paymentmode,
@@ -68,7 +122,7 @@ router.put('/', (req, res) => {
         items: req.body.items,
         totalamount: req.body.totalamount
     }
-    Bills.findByIdAndUpdate({ _id: objectId(req.query.id)}, { $set: objBill }, { new: true }, (err, doc) => {
+    bills.findByIdAndUpdate({ _id: objectId(req.query.id) }, { $set: objBill }, { new: true }, (err, doc) => {
         if (!err)
             res.status(200).send(doc);
         else
@@ -80,7 +134,7 @@ router.delete('/', (req, res) => {
     if (!objectId.isValid(req.query.id))
         return res.status(400).send({ errorMsg: `No Record found for the given id ${req.query.id}` });
 
-    Bills.findByIdAndRemove(req.query.id, (err, doc) => {
+    bills.findByIdAndRemove(req.query.id, (err, doc) => {
         if (!err)
             res.status(200).send(doc);
         else
