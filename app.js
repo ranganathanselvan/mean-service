@@ -1,4 +1,4 @@
-const  express = require('express');
+const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
@@ -12,7 +12,7 @@ const app = express();
 
 dotenv.config();
 app.use(express.json());
-app.use(cors({origin: 'http://localhost:4200'}));
+app.use(cors({ origin: 'http://localhost:4200' }));
 console.log(`Your port is ${process.env.PORT}`); // 8626
 let PORT = process.env.PORT;
 if (PORT == null || PORT == "") {
@@ -20,9 +20,10 @@ if (PORT == null || PORT == "") {
 }
 //const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Server started at port ${PORT}` );
+    console.log(`Server started at port ${PORT}`);
 });
 app.use(express.static(__dirname + '/app'));
+app.use("/tamilselvan", express.static(__dirname + '/portfolio'));
 
 app.use('/api/bills', billsController);
 app.use('/api/incomes', incomeController);
