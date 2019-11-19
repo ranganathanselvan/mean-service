@@ -7,6 +7,7 @@ const billsController = require('./controller/billsController');
 const incomeController = require('./controller/incomeController');
 const transactionController = require('./controller/transactionController');
 const salaryController = require('./controller/salaryController');
+const portfolioController = require('./controller/portfolioController');
 
 const app = express();
 
@@ -29,3 +30,4 @@ app.use('/api/bills', billsController);
 app.use('/api/incomes', incomeController);
 app.use('/api/transaction', transactionController);
 app.use('/api/salary', salaryController);
+app.use('api/portfolio', portfolioController);
