@@ -242,7 +242,7 @@
       <div class="card card-body py-5">
         <h3>Get In Touch</h3>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Error quos illo, dicta id voluptates enim.</p>
-        <form action="ContactSubmit();" class="needs-validation" novalidate>
+        <form class="needs-validation" novalidate method="POST">
           <div class="form-group">
             <div class="input-group input-group-lg">
               <div class="input-group-prepend">
@@ -278,14 +278,15 @@
                   <i class="fas fa-pencil-alt"></i>
                 </span>
               </div>
-              <textarea id="txtComment" class="form-control bg-dark text-white" placeholder="Comments" required></textarea>
+              <textarea id="txtComment" class="form-control bg-dark text-white" placeholder="Comments"
+                required></textarea>
               <div class="invalid-feedback">
                 Please provide the comments.
               </div>
             </div>
           </div>
 
-          <input type="submit" value="Submit" class="btn btn-danger btn-block btn-lg">
+          <input type="button" value="Submit" id="btnSubmit" onclick="ContactSubmit();" class="btn btn-danger btn-block btn-lg">
         </form>
       </div>
     </div>
@@ -326,7 +327,7 @@
         var txtComment = $('#textComment').val();
 
         var request = $.ajax({
-          url: 'https://quiet-lake-20402.herokuapp.com/api/transaction',
+          url: 'https://quiet-lake-20402.herokuapp.com/api/portfolio',
           type: 'POST',
           data: { name: txtName, email: txtEmail, comment: txtComment }
         })
@@ -334,15 +335,35 @@
           alert(result);
         });
         request.fail(function (jqXHR, textStatus) {
-          alert( "Request failed: " + textStatus );
+          alert("Request failed: " + textStatus);
         });
       }
-
+      
     });
+
     $(document).on('click', '[data-toggle="lightbox"]', function (e) {
       e.preventDefault();
       $(this).ekkoLightbox();
     });
+
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+      'use strict';
+      window.addEventListener('load', function () {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function (form) {
+          form.addEventListener('submit', function (event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
   </script>
 </body>
 
