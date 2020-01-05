@@ -13,7 +13,8 @@ const app = express();
 
 dotenv.config();
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:4200' }));
+//app.use(cors({ origin: 'http://localhost:4200' }));
+app.use(cors({ origin: 'https://docmgnt-rts-app.herokuapp.com/' }));
 console.log(`Your port is ${process.env.PORT}`); // 8626
 let PORT = process.env.PORT;
 if (PORT == null || PORT == "") {
