@@ -6,6 +6,9 @@ const router = express.Router();
 let transaction = require('../model/transaction');
 
 // => localhost:3000/api/transaction/
+/**Transaction Creation 
+ * load all the transaction into the page. no limitaion
+*/
 router.get('/', (req, res) => {
     transaction.find((err, docs) => {
         if (!err)
@@ -15,23 +18,10 @@ router.get('/', (req, res) => {
     });
 });
 
-// => localhost:3000/api/transaction/date
-router.get('/date', (req, res) => {
-    var Date = {};
-    var d = new Date();
-    d.setDate(d.getDate() - 10);
-    Date.currentDate = new Date();
-    Date.reduceDate = d;
-    res.status(200).send(JSON.stringify(Date));
-    /*transaction.find({date: {$gte: startDate, $lte: deductDate}}, (err, docs) => {
-        if (!err)
-            res.status(200).send(docs);
-        else
-            console.log(`Error in Retriving transaction: ${JSON.stringify(err, undefined, 2)}`);
-    });*/
-});
-
 // => localhost:3000/api/transaction/monthlyexpense/:month/:year
+/**Transaction Dashboard
+ * load the transaction by month and year
+ */
 router.get('/monthlyexpense/:month/:year', (req, res) => {
 
     console.log('Month: ' + req.params.month);
@@ -58,6 +48,9 @@ router.get('/monthlyexpense/:month/:year', (req, res) => {
 });
 
 // => localhost:3000/api/transaction/getExpenseDetailsByDesc/:month/:year/:description
+/**Transaction Dashboard 
+ * load the transaction by month, year and description
+ */
 router.get('/getExpenseDetailsByDesc/:month/:year/:description', (req, res) => {
 
     if (!req.params.month || !req.params.year || !req.params.description) {
@@ -96,7 +89,56 @@ router.get('/expenseById/:id', (req, res) => {
 
 });
 
+// => localhost:3000/api/transaction/loadTransactions
+/**Transaction Creation
+ * Load the tranaction by limitation. if start date and end date is no specified
+ * if start date and end date specified. load transactio by given dates
+ */
+router.post('/loadTransactions', (req, res) => {
+
+    if (!req.body.startDate && !req.body.endDate) {
+        transaction.aggregate(
+            [                
+                { $sort: { date: -1 } },
+                { $limit: 10 },
+                { $sort: { date: 1 } }
+            ]
+        ).exec((err, docs) => {
+            if (!err) {
+                res.status(200).send(docs);
+            } else {
+                console.log(`Error in Retriving transaction by Aggregate : ${JSON.stringify(err, undefined, 2)}`);
+                res.status(500).send('Unable to retrive expense.' + JSON.stringify(err, undefined, 2));
+            }
+        });
+    } else {
+        console.log(JSON.stringify(req.body));
+        const sDate = new Date(req.body.startDate);
+        const eDate = new Date(req.body.endDate);
+
+        console.log(sDate);
+        console.log(eDate);
+
+        transaction.aggregate(
+            [
+                { $match: { date: { $gte: sDate, $lte: eDate } } },
+                { $sort: { date: 1 } }
+            ]
+        ).exec((err, docs) => {
+            if (!err) {
+                res.status(200).send(docs);
+            } else {
+                console.log(`Error in Retriving transaction by Aggregate : ${JSON.stringify(err, undefined, 2)}`);
+                res.status(500).send('Unable to retrive expense.' + JSON.stringify(err, undefined, 2));
+            }
+        });
+    }
+});
+
 // => localhost:3000/api/transaction/
+/**Trasaction Creation
+ * Insert transaction into collection
+ */
 router.post('/', (req, res) => {
 
     let transactionObj = new transaction({
