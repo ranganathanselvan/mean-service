@@ -10,11 +10,25 @@ let transaction = require('../model/transaction');
  * load all the transaction into the page. no limitaion
 */
 router.get('/', (req, res) => {
-    transaction.find((err, docs) => {
+    /*transaction.find((err, docs) => {
         if (!err)
             res.status(200).send(docs);
         else
             console.log(`Error in Retriving transaction: ${JSON.stringify(err, undefined, 2)}`);
+    });*/
+    transaction.aggregate(
+        [
+            { $sort: { date: -1 } },
+            { $limit: 10 },
+            { $sort: { date: 1 } }
+        ]
+    ).exec((err, docs) => {
+        if (!err) {
+            res.status(200).send(docs);
+        } else {
+            console.log(`Error in Retriving transaction by Aggregate : ${JSON.stringify(err, undefined, 2)}`);
+            res.status(500).send('Unable to retrive expense.' + JSON.stringify(err, undefined, 2));
+        }
     });
 });
 
@@ -98,7 +112,7 @@ router.post('/loadTransactions', (req, res) => {
 
     if (!req.body.startDate && !req.body.endDate) {
         transaction.aggregate(
-            [                
+            [
                 { $sort: { date: -1 } },
                 { $limit: 10 },
                 { $sort: { date: 1 } }
