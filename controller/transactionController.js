@@ -15,14 +15,15 @@ router.get('/', (req, res) => {
             res.status(200).send(docs);
         else
             console.log(`Error in Retriving transaction: ${JSON.stringify(err, undefined, 2)}`);
-    });*/
-    transaction.aggregate(
+    });db.transactions.find({}).sort({_id:-1}).limit(10)*/
+    transaction.find({}).sort({_id: -1}).limit(10)
+    /*transaction.aggregate(
         [
             { $sort: { date: -1 } },
             { $limit: 10 },
             { $sort: { date: 1 } }
         ]
-    ).exec((err, docs) => {
+    )*/.exec((err, docs) => {
         if (!err) {
             res.status(200).send(docs);
         } else {
