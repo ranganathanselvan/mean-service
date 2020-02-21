@@ -26,6 +26,7 @@ app.listen(PORT, () => {
 });
 app.use(express.static(__dirname + '/app'));
 app.use("/tamilselvan", express.static(__dirname + '/portfolio'));
+app.use("/trade", express.static(__dirname + '/zerodhatrade'));
 
 app.use('/api/bills', billsController);
 app.use('/api/incomes', incomeController);
