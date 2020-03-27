@@ -25,7 +25,9 @@ app.listen(PORT, () => {
     console.log(`Server started at port ${PORT}`);
 });
 app.use(express.static(__dirname + '/app'));
-app.use("/tamilselvan", express.static(__dirname + '/portfolio'));
+app.use("/blogen", express.static(__dirname + '/blogen'));
+app.use("/glozzom", express.static(__dirname + '/glozzom'));
+app.use("/portfolio", express.static(__dirname + '/portfolio'));
 app.use("/trade", express.static(__dirname + '/zerodhatrade'));
 
 app.use('/api/bills', billsController);
